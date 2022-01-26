@@ -59,7 +59,9 @@
     </script>
  
     <script type="text/javascript">
-    
+     var path = 'speech_output';
+     var path2 = 'interim_span';
+        
      function init() {
         window.SpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition;
         recognition = new webkitSpeechRecognition();
@@ -68,8 +70,6 @@
         recognition.interimResults = true;        
         recognition.onend = reset;
         recognition.onresult = function disp(event) {
-        var path = 'speech_output';
-        var path2 = 'interim_span'
         var interim_transcript = '';
         var results = event.results;
         for (var i = event.resultIndex; i < results.length; ++i) {
@@ -85,6 +85,8 @@
       }
     }
     function start() {
+        path = 'speech_output';
+        path2 = 'interim_span';
         init();
         recognition.start();
     }
