@@ -1,0 +1,421 @@
+<html>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<body>
+    <script>
+    //Please insert your title and prompt here:
+    
+    //Enter title below in the area that says "Enter Title". Do NOT delete the quotations
+    const YourTitle = "Enter Title";
+    
+    //Enter prompt below in the area that says "Enter Prompt". Do NOT delete the quotations
+    const YourPrompt = "Enter Prompt";
+
+    </script>
+<div id="beginner" class="w3-container">
+<div class="w3-border w3-leftbar w3-topbar w3-rightbar w3-bottombar w3-border-blue">
+    <div class="w3-container w3-blue">
+        <h1>Student Information</h1>
+    </div>
+    <div class="w3-row-padding">
+        <div class="w3-half w3-center">
+            <div id="number_error" class="w3-panel w3-red w3-display-container" style="display: none">
+                <span onclick="this.parentElement.style.display='none'"
+                class="w3-button w3-large w3-display-topright">&times;</span>
+                <p>You forgot to write your student number, or have written an invalid student number!</p>
+            </div>
+            <h3 class="w3-text-blue">Student Number</h3>
+            <input id="snumber" class="w3-input w3-border w3-border-blue" type="text">
+        </div>
+        <div class="w3-half w3-center">
+            <div id="sname_error" class="w3-panel w3-red w3-display-container" style="display: none">
+                <span onclick="this.parentElement.style.display='none'"
+                class="w3-button w3-large w3-display-topright">&times;</span>
+                <p>You forgot to write your name!</p>
+            </div>
+            <h3 class="w3-text-blue">Enter Your Name:</h3>
+            <input id="sname" class="w3-input w3-border w3-border-blue" type="text">
+        </div>
+    </div>
+    <div class="w3-row-padding">
+        <div class="w3-half w3-center">
+            <div id="day_error" class="w3-panel w3-red w3-display-container" style="display: none">
+                <span onclick="this.parentElement.style.display='none'"
+                class="w3-button w3-large w3-display-topright">&times;</span>
+                <p>You forgot to select your class!</p>
+            </div>
+            <h3 class="w3-text-blue">English I-B Class Day:</h3>
+            <input class="w3-radio" type="radio" name="Day" value="Monday">
+            <label>Monday</label>
+            <input class="w3-radio" type="radio" name="Day" value="Tuesday">
+            <label>Tuesday</label>
+            <input class="w3-radio" type="radio" name="Day" value="Wednesday">
+            <label>Wednesday</label>
+            <input class="w3-radio" type="radio" name="Day" value="Thursday">
+            <label>Thursday</label>
+            <input class="w3-radio" type="radio" name="Day" value="Friday">
+            <label>Friday</label>
+        </div>
+        <div class="w3-half w3-center">
+            <div id="time_error" class="w3-panel w3-red w3-display-container" style="display: none">
+                <span onclick="this.parentElement.style.display='none'"
+                class="w3-button w3-large w3-display-topright">&times;</span>
+                <p>You forgot to select your class period!</p>
+            </div>
+            <h3 class="w3-text-blue">English I-B Class Period:</h3>
+            <input class="w3-radio" type="radio" name="Period" value="1">
+            <label>1st Period</label>
+            <input class="w3-radio" type="radio" name="Period" value="2">
+            <label>2nd Period</label>
+            <input class="w3-radio" type="radio" name="Period" value="3">
+            <label>3rd Period</label>
+            <input class="w3-radio" type="radio" name="Period" value="4">
+            <label>4th Period</label>
+        </div>
+    </div>
+    <br>
+</div>
+    <div class="w3-bar" id="yo" style="display: none;">
+        <p id="testing123" class="w3-center w3-sand"></p>
+    </div>
+    <div class="w3-bar w3-center w3-padding-16">
+        <button id="testing" class="w3-button w3-red w3-border w3-hover-grey" onclick="TesttheASR()">Check Device Compatibility</button>
+        <button id="begin" class="w3-button w3-purple w3-border w3-hover-deep-purple" onclick="StartTest()">Begin the Task</button>
+    </div>
+
+</div>
+
+<div id="real_stuff" style="display: none;">
+    <div class="w3-container w3-center">
+        <h3 class="w3-blue" id="theTitleText">Oral Summary:</h3>
+        <p class="w3-text-blue" id="theShijiBun">Orally summarize your notes about lecture 2 (Part 7) in less than two minutes. Your score will be determined based on inclusion of appropriate information. This question is designed to test your ability to orally summarize notes (Chapter 6). Once you click begin, you will have only two minutes to record your oral summary. You may click the button to stop early, but you may NOT restart once you have stopped. After you have finished, you will have a chance to re-record individual sentences. </p>
+    </div>
+    <div class="w3-container">
+        <div class="w3-panel w3-center">
+            <p id="timer">2:00</p>
+        </div>
+        <div class="w3-bar w3-center">
+            <button id="speaknow" class="w3-button w3-green w3-border w3-hover-grey" onclick="On_Off()">Start Speaking</button>
+        </div>
+        <div class="w3-panel">
+            <div  class="w3-panel w3-sand w3-center">
+                <span id="temp_results"></span>
+            </div>         
+            <div id="final_results"></div>
+        </div>
+        <div class="w3-bar w3-center">
+            <button id="submit" class="w3-button w3-purple w3-border w3-hover-deep-purple" onclick="SendAll()" disabled>Submit My Answer</button>
+        </div>
+        <br>
+    </div>
+</div>
+</body>
+</html>
+
+<style>
+    #timer{
+    margin: auto;
+    border: outset 4px grey;
+    background-color: black;
+    font-size: large;
+    font-family: 'Courier New', Courier, monospace;
+    color: white;
+    width: 200px;
+    padding: 10px;
+    vertical-align: middle;
+}
+</style>
+
+<script>
+    //Sets user prompt and title
+    document.getElementById('theTitleText').innerHTML = YourTitle;
+    document.getElementById('theShijiBun').innerHTML = YourPrompt;
+    //Variables for counters
+    var counter = 0;
+    var revision_sentence;
+    var the_timer;
+    var Interval;
+    var Interval2;
+    
+    //Variables for student data from first page
+    var Snumber; var Teacher_Name; var cDay; var cTime;
+    
+    //Controls the revision
+    function StartRevisions(){
+        the_timer = 60;
+            document.getElementById('timer').style.color = "white";
+            clearInterval(Interval2);
+            Interval2 = setInterval(startTimer2, 1000);
+            //This function adds 0.1 seconds to the timer every second. Its not actually starting the timer itself.
+            function startTimer2(){
+                the_timer -= 1;
+                var the_thing = the_timer.toFixed(1);
+                if (the_thing <=0) {
+                    clearInterval(Interval2);
+                    revision.stop();
+                    setTimeout(StopRevisions, 300);
+                } else {
+                    if (the_thing <15) {
+                        document.getElementById('timer').style.color = "red";
+                    }
+                    var minutes = Math.floor(the_thing / 60);
+                    var seconds = the_thing % 60;
+                    if (seconds <10) {
+                        seconds = "0"+seconds;
+                    }
+                    document.getElementById('timer').innerHTML = minutes + " : " + seconds;
+                }
+                
+            }
+    }
+    function StopRevisions(){
+        clearInterval(Interval2);
+        if (!counter==0){
+            for (let i=1; i<(counter+1); i++){
+                let button_n = 'button_'+i;
+                let button = document.getElementById(button_n);
+                button.disabled=true;
+                button.className="w3-button w3-grey w3-border w3-hover-grey";
+                let button_n2 = 'delete_'+i;
+                let button2 = document.getElementById(button_n2);
+                button2.disabled=true;
+                button2.className="w3-button w3-grey w3-border w3-hover-grey";
+            }
+        }
+    }
+    //Ensures at least one of the radio buttons is checked
+    function atLeastOneRadio(name) {
+        let losRadio = document.querySelector('input[name= "'+name+'"]:checked');
+        if (losRadio != null){
+            return (true);    
+        } else return (false);
+    }
+
+    //Switches to the problem / test
+    function StartTest(){
+
+        //Ensures students entered data and throws errors if they haven't 
+        if (document.getElementById('snumber').value == "" || document.getElementById('sname').value == "" || atLeastOneRadio('Day') == false || atLeastOneRadio('Period') == false){
+            if(document.getElementById('snumber').value == ""){
+            document.getElementById('number_error').style.display = "block";
+            } else  {document.getElementById('number_error').style.display = "none";}
+            if(document.getElementById('sname').value == ""){
+                document.getElementById('sname_error').style.display = "block";
+            } else{document.getElementById('sname_error').style.display = "none";}
+            if(atLeastOneRadio('Day') == false){
+                document.getElementById('day_error').style.display = "block";
+            } else {document.getElementById('day_error').style.display = "none";}
+            if(atLeastOneRadio('Period') == false){
+                document.getElementById('time_error').style.display = "block";
+            } else {document.getElementById('time_error').style.display = "none";}
+        } else {
+            document.getElementById('beginner').style.display = "none";
+            document.getElementById('real_stuff').style.display = "block";
+        }
+    }
+    
+    //Sends data; for this demo, it simply writes it in an alert box
+    function SendAll(){
+        var final_answer = "";
+        setTimeout(StopRevisions, 300);
+        setTimeout(ThenDoIt, 500);
+        function ThenDoIt(){
+                for (let i=1; i<(counter+1); i++){
+                let this_grabber = 'sent_'+(i);
+                if (document.getElementById(this_grabber)){            
+                    let this_sentence = document.getElementById(this_grabber).innerHTML;
+                    let fancy = "";
+                    if (this_sentence.charAt(0) == " "){
+                        fancy = this_sentence.charAt(1).toUpperCase() + this_sentence.slice(2);
+                    } else {
+                        fancy = this_sentence.charAt(0).toUpperCase() + this_sentence.slice(1);
+                    } 
+                    final_answer = final_answer + fancy + ". ";
+                }
+            }
+            Snumber = document.getElementById('snumber').value;
+            Teacher_Name = document.getElementById('sname').value;
+            cDay = document.querySelector('input[name="Day"]:checked').value;
+            cTime = document.querySelector('input[name="Period"]:checked').value;
+            if (final_answer==""){
+                alert("You didn't make a response!");
+            } else {
+                google.script.run.userClicked(Snumber, Teacher_Name, cDay, cTime, final_answer);
+                alert("Your answer was sent succesfully!");
+            }
+        }
+        
+    }
+
+    //Starts the revision ASR
+    function Revise(answer){
+        revision_sentence = document.getElementById(answer);
+        revision_sentence.innerHTML = "";
+        RevisionASR();
+        revision.start();
+    }
+
+    //Controls functionality of the main speaking button
+    function On_Off(){
+        var button = document.getElementById('speaknow');
+        if(button.innerHTML == "Start Speaking"){
+            StartASR();
+            recognition.start();
+            button.className="w3-button w3-red w3-border w3-hover-grey";
+            button.innerHTML  = "Stop Speaking";
+            the_timer = 120;
+            document.getElementById('timer').style.color = "white";
+            clearInterval(Interval);
+            Interval = setInterval(startTimer, 1000);
+            //This function adds 0.1 seconds to the timer every second. Its not actually starting the timer itself.
+            function startTimer(){
+                the_timer -= 1;
+                var the_thing = the_timer.toFixed(1);
+                if (the_thing <=0) {
+                    clearInterval(Interval);
+                    button.disabled=true;
+                    button.className="w3-button w3-grey w3-border w3-hover-grey";
+                    recognition.stop();
+                    setTimeout(revButtons, 300);
+                } else {
+                    if (the_thing <20) {
+                        document.getElementById('timer').style.color = "red";
+                    }
+                    var minutes = Math.floor(the_thing / 60);
+                    var seconds = the_thing % 60;
+                    if (seconds <10) {
+                        seconds = "0"+seconds;
+                    }
+                    document.getElementById('timer').innerHTML = minutes + " : " + seconds;
+                }
+            }
+        } else {
+            clearInterval(Interval);
+            button.disabled=true;
+            button.className="w3-button w3-grey w3-border w3-hover-grey";
+            recognition.stop();
+            setTimeout(revButtons, 300);
+        }
+    }
+
+    function DeleteSentence(sentence){
+        revision_sentence = document.getElementById(sentence);
+        revision_sentence.innerHTML = "";
+    }
+
+    //Controls responsiveness of revision buttons
+    function revButtons(){
+        document.querySelector('#submit').disabled = false;
+        if (!counter==0){
+            for (let i=1; i<(counter+1); i++){
+                let div_n = 'holder_'+i;
+                let button_n = 'button_'+i;
+                let del = 'delete_'+i;
+                let button = document.createElement("button");
+                let delby = document.createElement('button');
+                button.id=button_n;
+                delby.id=del;
+                button.innerHTML = "Re-record Sentence";
+                delby.innerHTML = "Delete Sentence";
+                button.className= "w3-button w3-green w3-border w3-hover-grey w3-center";
+                delby.className= "w3-button w3-red w3-border w3-hover-grey w3-center";
+                let doublehelp = 'sent_'+i;
+                let helper="Revise('"+doublehelp+"')";
+                button.setAttribute("onclick",helper);
+                let delby_help = "DeleteSentence('"+doublehelp+"')";
+                delby.setAttribute("onclick",delby_help);
+                document.getElementById(div_n).appendChild(button);
+                document.getElementById(div_n).appendChild(delby);
+            }
+        }
+        alert("You now have 1 minute to revise your answer.");
+        StartRevisions();
+
+    }
+
+    //Controls the initial test ASR
+    function TesttheASR(){
+        document.getElementById('yo').style.display = "inline";
+        document.getElementById('testing123').innerHTML = "Testing...";
+        testASR();
+        test_run.start();
+    }
+    function testASR(){
+    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    test_run = new webkitSpeechRecognition();
+    test_run.continuous = true;
+    test_run.lang = 'en-US';
+    test_run.interimResults = true;
+    test_run.onresult = disp_test;
+    }
+    function disp_test(event){
+        var results = event.results;
+        for (var i = event.resultIndex; i < results.length; ++i) {
+            if (results[i].isFinal) {
+                if (results[i][0].transcript){
+                    document.getElementById('testing123').innerHTML = "Your device is capturing your voice, no problem.";
+                    document.getElementById('testing123').className = "w3-center w3-green";
+                } else {
+                    document.getElementById('testing123').innerHTML = "Your device is not capturing your voice; please try again, use a different device, or seek help.";
+                    document.getElementById('testing123').className = "w3-center w3-red";
+                }
+                test_run.stop();
+            } 
+        }
+    }
+    function RevisionASR(){
+    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    revision = new webkitSpeechRecognition();
+    revision.continuous = true;
+    revision.lang = 'en-US';
+    revision.interimResults = true;
+    revision.onresult = disp_revision;
+    }
+    function disp_revision(event){
+        var interim_transcript = '';
+        var results = event.results;
+        for (var i = event.resultIndex; i < results.length; ++i) {
+            if (results[i].isFinal) {
+                counter += 1;
+                revision_sentence.innerHTML += results[i][0].transcript;
+                revision.stop();
+            } else {
+                interim_transcript +=event.results[i][0].transcript;
+                document.getElementById('temp_results').innerHTML = interim_transcript;
+            }
+        }
+    }
+
+    //Main ASR start
+    function StartASR(){
+    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new webkitSpeechRecognition();
+    recognition.continuous = true;
+    recognition.lang = 'en-US';
+    recognition.interimResults = true;
+    recognition.onresult = disp;
+}
+    function disp(event) {
+        var interim_transcript = '';
+        var results = event.results;
+        for (var i = event.resultIndex; i < results.length; ++i) {
+            if (results[i].isFinal) {
+                counter += 1;
+                let div_name = 'holder_'+counter;
+                let temp_name = 'sent_'+counter;
+                let holder = document.createElement('div');
+                holder.id=div_name;
+                holder.className="w3-panel w3-light-gray";
+                document.getElementById('final_results').appendChild(holder);
+                let sentence = document.createElement("p");
+                sentence.id=temp_name;
+                sentence.className="w3-cell"
+                sentence.innerHTML += results[i][0].transcript;
+                document.getElementById(div_name).appendChild(sentence);
+            } else {
+                interim_transcript +=event.results[i][0].transcript;
+                document.getElementById('temp_results').innerHTML = interim_transcript;
+            }
+        }
+}
+
+</script>
