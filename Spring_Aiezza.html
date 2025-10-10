@@ -6,11 +6,27 @@
 <script>
     //Please insert your title and prompt here:
     
-    //Enter title below in the area that says "Enter Title". Do NOT delete the quotations
-    const YourTitle = "Enter Title";
-    
-    //Enter prompt below in the area that says "Enter Prompt". Do NOT delete the quotations
-    const YourPrompt = "Enter Prompt";
+    //Chris, please enter words and URLS for pictures
+    //Always make the 'correct' picture the first in the list
+    const theData = [
+        {'word': 'bread',
+        'pictures': 
+            ['https://www.thespruceeats.com/thmb/vbc6MqkqHlkSOx_X5Clyo5qv0kk=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/loaf-of-bread-182835505-58a7008c5f9b58a3c91c9a14.jpg',
+             'https://media.royaldesign.com/2/satake-frying-pan-carbon-steel-13?w=800&quality=80',
+             'https://static.wikia.nocookie.net/deathbattlefanon/images/9/94/Pan-Anime.png/revision/latest?cb=20160603121551',
+             'https://www.collinsdictionary.com/images/full/apple_158989157.jpg'
+            ]
+        },
+        {'word': 'pan',
+        'pictures': 
+            ['https://media.royaldesign.com/2/satake-frying-pan-carbon-steel-13?w=800&quality=80',
+             'https://static.wikia.nocookie.net/deathbattlefanon/images/9/94/Pan-Anime.png/revision/latest?cb=20160603121551',
+             'https://www.collinsdictionary.com/images/full/apple_158989157.jpg',
+             'https://www.thespruceeats.com/thmb/vbc6MqkqHlkSOx_X5Clyo5qv0kk=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/loaf-of-bread-182835505-58a7008c5f9b58a3c91c9a14.jpg'
+            ]
+        }
+    ];
+
 
 </script>
     
@@ -21,6 +37,15 @@
         <span class="w3-button w3-hover-red w3-xlarge w3-display-topright">&times;</span></header>
         <div class="w3-container">
             <div id="theASRerrorMessage"></div>
+        </div>
+    </div>
+</div>
+<!--This is the waitingASR-->
+<div id="waitingASR" class="w3-modal" onclick="this.style.display='none'" style="display:block;">
+    <div id="waitingASRContent" class="w3-modal-content w3-animate-zoom" style="width:560px; height:315px; overflow-y: auto;">
+        <header class="w3-container w3-red w3-center"><h2>ローディング中</h2></header>
+        <div class="w3-container w3-center">
+            <div><br><img style='max-height:200px' src='https://springsenglish.online/dumbNLP/Spinning.gif'></img></div>
         </div>
     </div>
 </div>
@@ -43,126 +68,367 @@
         </div>
         <br>
     </div>
-    <div class="w3-bar" id="yo" style="display: none;">
-        <p id="testing123" class="w3-center w3-sand"></p>
-    </div>
+    <div class="w3-container w3-light-grey" >
+        <div class="w3-half w3-center">
+            <button id="testing" class="w3-button w3-red w3-round-xlarge w3-border w3-hover-grey" onclick="TesttheASR()">スピーキングを試す</button>
+            <div class="w3-bar" id="yo" style="display: none;">
+                <p id="testing123" class="w3-center w3-sand"></p>
+            </div>
+        </div>
+        <div class="w3-half w3-center">
+            <label for="voices"><b>声を選んでください</b></label>
+            <select id="voices" class="lSelect" onchange="selectVoice()">
+            </select>
+            </div>
+        </div>
     <div class="w3-bar w3-center w3-padding-16">
-        <button id="testing" class="w3-button w3-red w3-border w3-hover-grey" onclick="TesttheASR()">デバイスを試す</button>
-        <button id="begin" class="w3-button w3-purple w3-border w3-hover-deep-purple" onclick="StartTest()">始める！</button>
+        <button id="begin" class="w3-button w3-green w3-round-xlarge w3-hover-grey" onclick="StartTest()">始める！</button>
     </div>
 
 </div>
 
+<!--This is the correctness modal-->
+    <div id="correctnessModal" class="w3-modal" >
+        <div class="w3-modal-content w3-animate-zoom" style="width:560px; height:315px;overflow-y: auto;">
+            <div class="w3-container w3-center" id="correctnessModalContent">
+                           
+            </div>
+        </div>
+    </div>
+
 <div id="real_stuff" style="display: none;">
-    <div class="w3-container w3-center">
-        <h3 class="w3-blue" id="theTitleText">Oral Summary:</h3>
-        <p class="w3-text-blue" id="theShijiBun">Orally summarize your notes about lecture 2 (Part 7) in less than two minutes. Your score will be determined based on inclusion of appropriate information. This question is designed to test your ability to orally summarize notes (Chapter 6). Once you click begin, you will have only two minutes to record your oral summary. You may click the button to stop early, but you may NOT restart once you have stopped. After you have finished, you will have a chance to re-record individual sentences. </p>
+    <div id="Part1Holder">
+        <div class="tu-prime-light tu-menuFull w3-center">
+            <br>
+            <p class="tu-top-explanation">スタートボタンを押したら、音声が流れます。音声を聞いて、適切な絵を選んでください。</p>
+            <br>
+            <button class="w3-button tu-second-dark w3-round-xlarge w3-hover-grey" id="part1StartButton" onclick="truePart1Start()">スタート</button>
+            <br><br>
+        </div>
+        <div id="part1AllStuff" class="w3-container" style="display:none">
+            <div class="tu-menuFull tu-second-light" id="source_id">
+                <div class="tu-menu90 tu-second-dark w3-center">
+                    <h3>よく聞いて、適切な絵を選んでください</h3>
+                </div>
+                <br>
+                <div class="w3-bar w3-center ">
+                    <button class="w3-button w3-red w3-round-xlarge w3-hover-grey" onclick="relisten()">もう一度聴く！</button>
+                </div>
+                <br>
+
+                <div class="tu-white-island">
+                    <div id="part1Pictures" class="w3-container" style="text-align:left">
+                        <div class="w3-row-padding">
+                            <div class="w3-half w3-center">
+                                <img id="picture00" class="pictureQuestion" src="" onclick="userAnswered('picture00')">
+                            </div>
+                            <div class="w3-half w3-center">
+                                <img id="picture01" class="pictureQuestion" src="" onclick="userAnswered('picture01')">
+                            </div>
+                        </div>
+                        <div class="w3-row-padding">
+                            <div class="w3-half w3-center">
+                                <div class="w3-half w3-center">
+                                    <img id="picture02" class="pictureQuestion" src="" onclick="userAnswered('picture02')">
+                                </div>
+                                <div class="w3-half w3-center">
+                                    <img id="picture03" class="pictureQuestion" src="" onclick="userAnswered('picture03')">
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                <br>
+            </div>
+        </div>
     </div>
-    <div class="w3-container">
-        <div class="w3-panel w3-center">
-            <p id="timer">2:00</p>
+
+    <div id="Part2Holder" style="display:none">
+        <div id="Part2Holder">
+        <div class="tu-prime-light tu-menuFull w3-center">
+            <br>
+            <p class="tu-top-explanation">スタートボタンを押したら、英語の音声が流れます。グルグルが消えたら、できるだけ発音よく繰り返してみてください。</p>
+            <br>
+            <div class="w3-bar w3-center">
+                <button class="w3-button tu-second-dark w3-round-xlarge w3-hover-grey" id="part2StartButton"  onclick="truePart2Start()">スタート</button>
+            </div>
+            <br><br>
         </div>
-        <div class="w3-bar w3-center">
-            <button id="speaknow" class="w3-button w3-green w3-border w3-hover-grey" onclick="On_Off()">スピーキング開始</button>
+        <div id="part2AllStuff" class="w3-container" style="display:none">
+            <div class="tu-menuFull tu-second-light" id="source_id">
+                <div class="tu-menu90 tu-second-dark w3-center">
+                    <h3>よく聞いて、繰り返して言ってみてください</h3>
+                </div>
+                <br>
+                <div class="w3-bar w3-center">
+                <button class="w3-button w3-red w3-round-xlarge w3-hover-grey" onclick="relisten2()">もう一度聴く！</button>
+                </div>
+                <br><br>
+                <div class="tu-white-island">
+                    <div id="part2Pictures" class="w3-container w3-center">
+                        
+                    </div>
+                </div>
+                <br>
+            </div>
         </div>
-        <div class="w3-panel">
-            <div  class="w3-panel w3-sand w3-center">
-                <span id="temp_results"></span>
-            </div>         
-            <div id="final_results"></div>
-        </div>
-        <div class="w3-bar w3-center">
-            <button id="submit" class="w3-button w3-purple w3-border w3-hover-deep-purple" onclick="SendAll()" disabled>提出</button>
-        </div>
-        <br>
     </div>
+
+    </div>
+
+
 </div>
 </body>
 </html>
-
 <style>
-    #timer{
-    margin: auto;
-    border: outset 4px grey;
-    background-color: black;
-    font-size: large;
-    font-family: 'Courier New', Courier, monospace;
-    color: white;
-    width: 200px;
-    padding: 10px;
-    vertical-align: middle;
-}
+  .pictureQuestion {
+    max-width: 90%;
+    height: auto;
+    max-height: 400px;
+    display: block;
+    margin: 0 auto;
+    transition: opacity 0.3s ease;
+  }
+  .pictureQuestion:hover {
+    opacity: 0.8;
+    cursor: pointer;
+  }
+#correctnessModalContent {
+    height: 100%;
+    display: flex;
+    justify-content: center;     /* horizontal centering */
+    align-items: center;         /* vertical centering */
+    font-size: 2em;              /* large text */
+    color: white;                /* text color */
+    background-color: #f44336;   /* red background (same as w3-red) */
+  }
+
+
+
 </style>
 
+
 <script>
-    //Sets user prompt and title
-    document.getElementById('theTitleText').innerHTML = YourTitle;
-    document.getElementById('theShijiBun').innerHTML = YourPrompt;
     //Variables for counters
     var counter = 0;
+    var guesses = 0;
     var revision_sentence;
     var the_timer;
-    var Interval;
-    var Interval2;
+    var Interval = null;
     var isInternalSR = true;
-    
+    var correctnessData = {'part1': [], 'part2':[]}; //tracks data for sending at end of stuff
+    var orderPart1 = [];
+    var orderPart2 = [];
+    var temp_holder;
+
     //Variables for student data from first page
-    var Snumber; var Teacher_Name; var cDay; var cTime;
+    var Snumber;
+
+    //Global vars for listening / speaking
+    var language_var = 'en-US';
+    var languageVoice = '';
+    let voices = [];
+    const options = document.getElementById('voices');
+    const hasSynth = 'speechSynthesis' in window
+    if (hasSynth) {
+    voices = speechSynthesis.getVoices()
     
-    //Controls the revision
-    function StartRevisions(){
-        the_timer = 60;
-            document.getElementById('timer').style.color = "white";
-            clearInterval(Interval2);
-            Interval2 = setInterval(startTimer2, 1000);
-            //This function adds 0.1 seconds to the timer every second. Its not actually starting the timer itself.
-            function startTimer2(){
-                the_timer -= 1;
-                var the_thing = the_timer.toFixed(1);
-                if (the_thing <=0) {
-                    clearInterval(Interval2);
-                    revision.stop();
-                    setTimeout(StopRevisions, 300);
-                } else {
-                    if (the_thing <15) {
-                        document.getElementById('timer').style.color = "red";
-                    }
-                    var minutes = Math.floor(the_thing / 60);
-                    var seconds = the_thing % 60;
-                    if (seconds <10) {
-                        seconds = "0"+seconds;
-                    }
-                    document.getElementById('timer').innerHTML = minutes + " : " + seconds;
-                }
-                
-            }
+    speechSynthesis.addEventListener('voiceschanged', () => {
+        voices = speechSynthesis.getVoices()
+    })
     }
-    function StopRevisions(){
-        clearInterval(Interval2);
-        if (!counter==0){
-            for (let i=1; i<(counter+1); i++){
-                let button_n = 'button_'+i;
-                let button = document.getElementById(button_n);
-                button.disabled=true;
-                button.className="w3-button w3-grey w3-border w3-hover-grey";
-                let button_n2 = 'delete_'+i;
-                let button2 = document.getElementById(button_n2);
-                button2.disabled=true;
-                button2.className="w3-button w3-grey w3-border w3-hover-grey";
+    
+    //get the voices on 5sec timeout
+    window.onload = function () { 
+        setTimeout(GetVoices, 3000);
+    }
+
+    //Provides the listening via text-to-speech; takes a string as an argument.
+    function Listen(word) {
+        //Cancel current / previous speech synthesis
+        if (window.speechSynthesis.speaking) { 
+            window.speechSynthesis.cancel(); 
+        }
+        let utter = new SpeechSynthesisUtterance();
+        utter.lang = language_var;
+        utter.voice = voices.find(voice=> voice.name === options.value);
+        utter.text = word;
+        window.speechSynthesis.speak(utter);
+        utter.onend = function(event) {
+            if (document.getElementById('Part2Holder').style.display=="block"){
+                triggerSpeach();
+            }
+        };
+    }
+
+    //Handles voice options - I usually use it with a timeout; if this is called TOO early, it will be called before the voices load and then it will be blank.
+    function GetVoices(){
+        const initOpt = document.createElement('option')
+        if (!voices.length && hasSynth) {
+        voices = speechSynthesis.getVoices()
+        }
+        initOpt.append(document.createTextNode('-- 声を選んでください --'))
+        options.append(initOpt)
+        voices.forEach(voice => {
+        const option = document.createElement('option')
+        option.value = voice.name;
+        if (voice.lang.includes('en')) {
+                var forkids = '';
+                if(voice.lang = "en-GB"){
+                    forkids = "British English"
+                } if (voice.lang = "en-US") {
+                    forkids = "American English"
+                } else {forkids = voice.lang}
+                option.append(document.createTextNode(`${forkids} : ${voice.name}`))
+                options.append(option)
+            }
+        })
+        options.style.display = 'inline';
+        document.getElementById('waitingASR').style.display="none";
+    }
+
+    //Plays an example when a new voice is selected
+    function selectVoice(){
+        Listen("Hello, this is my voice.");
+    }
+
+    function startTimer() {
+        if (Interval === null) {
+            Interval = setInterval(function() {
+            the_timer++;
+            }, 100); // 100 ms = 0.1 seconds
+        }
+    }
+
+    function stopTimer() {
+        if (Interval !== null) {
+            clearInterval(Interval);
+            Interval = null;
+        }
+    }
+
+    function displayCorrectness(correctness){ //correctness is true/false true=correct
+        stopTimer();
+        guesses++;
+        if (correctness==true){
+            document.getElementById('correctnessModalContent').classList="w3-center w3-green";
+            document.getElementById('correctnessModalContent').innerHTML="正解！";
+            correctnessData.part1.push({'guesses':guesses,'RT':the_timer/10});
+            setTimeout(()=>{
+                document.getElementById('correctnessModal').style.display="none";
+                finishPictureQuestion();
+            }, 1300);
+            
+        } else {
+            document.getElementById('correctnessModalContent').classList="w3-center w3-red";
+            document.getElementById('correctnessModalContent').innerHTML="不正解！";
+            setTimeout(()=>{
+                document.getElementById('correctnessModal').style.display="none";
+                startTimer();
+            }, 1300);
+        }
+        document.getElementById('correctnessModal').style.display="block";
+
+    }
+    
+    function truePart1Start(){
+        document.getElementById('part1StartButton').style.display='none'; //hide the start button
+        document.getElementById('part1AllStuff').style.display='block'; //display main stuff
+        orderPart1 = randomize(theData.length);
+        constructPictureQuestion(orderPart1[0]);
+    }
+
+    function finishPictureQuestion(){
+        if (correctnessData.part1.length < theData.length){
+            constructPictureQuestion(orderPart1[correctnessData.part1.length]); //set the next question
+        } else { //if we're finished, go to the next one
+            document.getElementById('Part1Holder').style.display="none";
+            document.getElementById('Part2Holder').style.display="block";
+        }
+    }
+
+    function userAnswered(choice){
+        let currentQuestion = correctnessData.part1.length;
+        let answerChoice = parseInt(choice.charAt(8));
+        //displayCorrectness(data.pictures[currentQuestion].pictures[0]==data.pictures[currentQuestion].pictures[0]);
+        displayCorrectness(answerChoice==0);
+    }
+
+    function constructPictureQuestion(number){
+        guesses = 0;
+        the_timer = 0;
+        document.getElementById('part1Pictures').innerHTML="";
+        let thisOrder = randomize(4);
+
+        const container = document.createElement("div");
+
+        // First row
+        const row1 = document.createElement("div");
+        row1.className = "w3-cell-row-padding";
+        for (let i = 0; i < 2; i++) {
+            const half = document.createElement("div");
+            half.className = "w3-half w3-center w3-cell-middle";
+            half.style.width="50%";
+            const img = document.createElement("img");
+            img.id = `picture0${i}`;
+            img.className = "pictureQuestion";
+            img.src = theData[number].pictures[GetOriginal(i,thisOrder)];
+            img.setAttribute("onclick", `userAnswered('picture0${GetOriginal(i,thisOrder)}')`);
+
+            half.appendChild(img);
+            row1.appendChild(half);
+        }
+        container.appendChild(row1);
+
+        // Second row
+        const row2 = document.createElement("div");
+        row2.className = "w3-cell-row-padding";
+
+        for (let i = 2; i < 4; i++) {
+            const innerHalf = document.createElement("div");
+            innerHalf.className = "w3-half w3-center w3-cell-middle";
+            innerHalf.style.width="50%";
+            const img = document.createElement("img");
+            img.id = `picture0${i}`;
+            img.className = "pictureQuestion";
+            img.src = theData[number].pictures[GetOriginal(i,thisOrder)];
+            img.setAttribute("onclick", `userAnswered('picture0${GetOriginal(i,thisOrder)}')`);
+
+            innerHalf.appendChild(img);
+            row2.appendChild(innerHalf);
+        }
+        container.appendChild(row2);
+
+        // Add a <br>
+        container.appendChild(document.createElement("br"));
+
+        // Append to body or another element
+        document.getElementById('part1Pictures').appendChild(container);
+        startTimer();
+        Listen(theData[number].word);
+    }
+
+    function relisten(){
+        Listen(theData[correctnessData.part1.length].word)
+    }
+    function relisten2(){
+        Listen(theData[correctnessData.part2.length].word)
+    }
+
+    //Matches the needle in the haystack (array) and returns what is required
+    function GetOriginal(needle, haystack){
+        for (let i=0; i<haystack.length; i++){
+            if (haystack[i] == needle){
+                return (i);
             }
         }
     }
-    //Ensures at least one of the radio buttons is checked
-    function atLeastOneRadio(name) {
-        let losRadio = document.querySelector('input[name= "'+name+'"]:checked');
-        if (losRadio != null){
-            return (true);    
-        } else return (false);
-    }
+    
 
+    
     //Switches to the problem / test
     function StartTest(){
-
         //Ensures students entered data and throws errors if they haven't 
         if (document.getElementById('snumber').value == ""){
             document.getElementById('number_error').style.display = "block";
@@ -175,123 +441,13 @@
    
     //Sends data; for this demo, it simply writes it in an alert box
     function SendAll(){
-        var final_answer = "";
-        setTimeout(StopRevisions, 300);
-        setTimeout(ThenDoIt, 500);
-        function ThenDoIt(){
-                for (let i=1; i<(counter+1); i++){
-                let this_grabber = 'sent_'+(i);
-                if (document.getElementById(this_grabber)){            
-                    let this_sentence = document.getElementById(this_grabber).innerHTML;
-                    let fancy = "";
-                    if (this_sentence.charAt(0) == " "){
-                        fancy = this_sentence.charAt(1).toUpperCase() + this_sentence.slice(2);
-                    } else {
-                        fancy = this_sentence.charAt(0).toUpperCase() + this_sentence.slice(1);
-                    } 
-                    final_answer = final_answer + fancy + ". ";
-                }
-            }
-            Snumber = document.getElementById('snumber').value;
-            let MLU = CalculateMLS(final_answer);
-            let allWords = ProvideWords(final_answer);
-            let NoWords = allWords.length;
-            if (final_answer==""){
-                alert("発話データは無いようです");
-            } else {
-                google.script.run.userClicked(Snumber, final_answer, NoWords, MLU);
-                alert("回答は無事に提出されました");
-            }
-        }
-        
+        Snumber = document.getElementById('snumber').value;
+        console.log(correctnessData);
+        google.script.run.userFinished(Snumber, correctnessData);
+        alert("回答は無事に先生に送られました！");
     }
 
-    //Starts the revision ASR
-    function Revise(answer){
-        revision_sentence = document.getElementById(answer);
-        revision_sentence.innerHTML = "";
-        RevisionASR();
-        revision.start();
-    }
-
-    //Controls functionality of the main speaking button
-    function On_Off(){
-        var button = document.getElementById('speaknow');
-        if(button.innerHTML == "スピーキング開始"){
-            StartASR();
-            recognition.start();
-            button.className="w3-button w3-red w3-border w3-hover-grey";
-            button.innerHTML  = "スピーキング終了";
-            the_timer = 120;
-            document.getElementById('timer').style.color = "white";
-            clearInterval(Interval);
-            Interval = setInterval(startTimer, 1000);
-            //This function adds 0.1 seconds to the timer every second. Its not actually starting the timer itself.
-            function startTimer(){
-                the_timer -= 1;
-                var the_thing = the_timer.toFixed(1);
-                if (the_thing <=0) {
-                    clearInterval(Interval);
-                    button.disabled=true;
-                    button.className="w3-button w3-grey w3-border w3-hover-grey";
-                    recognition.stop();
-                    setTimeout(revButtons, 300);
-                } else {
-                    if (the_thing <20) {
-                        document.getElementById('timer').style.color = "red";
-                    }
-                    var minutes = Math.floor(the_thing / 60);
-                    var seconds = the_thing % 60;
-                    if (seconds <10) {
-                        seconds = "0"+seconds;
-                    }
-                    document.getElementById('timer').innerHTML = minutes + " : " + seconds;
-                }
-            }
-        } else {
-            clearInterval(Interval);
-            button.disabled=true;
-            button.className="w3-button w3-grey w3-border w3-hover-grey";
-            recognition.stop();
-            setTimeout(revButtons, 300);
-        }
-    }
-
-    function DeleteSentence(sentence){
-        revision_sentence = document.getElementById(sentence);
-        revision_sentence.innerHTML = "";
-    }
-
-    //Controls responsiveness of revision buttons
-    function revButtons(){
-        document.querySelector('#submit').disabled = false;
-        if (!counter==0){
-            for (let i=1; i<(counter+1); i++){
-                let div_n = 'holder_'+i;
-                let button_n = 'button_'+i;
-                let del = 'delete_'+i;
-                let button = document.createElement("button");
-                let delby = document.createElement('button');
-                button.id=button_n;
-                delby.id=del;
-                button.innerHTML = "やり直す";
-                delby.innerHTML = "削除";
-                button.className= "w3-button w3-green w3-border w3-hover-grey w3-center";
-                delby.className= "w3-button w3-red w3-border w3-hover-grey w3-center";
-                let doublehelp = 'sent_'+i;
-                let helper="Revise('"+doublehelp+"')";
-                button.setAttribute("onclick",helper);
-                let delby_help = "DeleteSentence('"+doublehelp+"')";
-                delby.setAttribute("onclick",delby_help);
-                document.getElementById(div_n).appendChild(button);
-                document.getElementById(div_n).appendChild(delby);
-            }
-        }
-        alert("You now have 1 minute to revise your answer.");
-        StartRevisions();
-
-    }
-
+    
     //Controls the initial test ASR
     function TesttheASR(){
         document.getElementById('yo').style.display = "inline";
@@ -336,84 +492,130 @@
                 } 
             }
     }
-    function RevisionASR(){
-    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    revision = new SpeechRecognition();
-    if (!revision){
-        revision = new webkitSpeechRecognition();
-        isInternalSR = false;
-    }
-    revision.continuous = true;
-    revision.lang = 'en-US';
-    if (isInternalSR == false){
-        revision.interimResults = true;
-    } else {
-        revision.interimResults = false;
-    }
-    revision.onerror = (event) => {
-        console.log(event.error);
-        ASRerrorHandle(event.error);
-    };
-    revision.onresult = disp_revision;
-    }
-    function disp_revision(event){
-        var interim_transcript = '';
-        var results = event.results;
-        for (var i = event.resultIndex; i < results.length; ++i) {
-            if (results[i].isFinal) {
-                counter += 1;
-                revision_sentence.innerHTML += results[i][0].transcript;
-                revision.stop();
-            } else {
-                interim_transcript +=event.results[i][0].transcript;
-                document.getElementById('temp_results').innerHTML = interim_transcript;
-            }
-        }
+
+    function triggerSpeach(){
+        StartASR();
+        recognition.start();
+        setTimeout(()=>{
+            document.getElementById('part2Pictures').innerHTML="<span style='color:green'><b>話してください</b></span>";
+            startTimer();
+        }, 1000);
     }
 
+    function makeSpeakingQuestion(number){
+        the_timer=0;
+        Listen(theData[number].word);
+        document.getElementById('part2Pictures').innerHTML="<span style='color:red'><b>待ってください...</b></span> <br><img style='max-height:200px' src='https://springsenglish.online/dumbNLP/Spinning.gif'></img>";
+    }
+
+    function truePart2Start(){
+        document.getElementById('part2StartButton').style.display='none'; //hide the start button
+        document.getElementById('part2AllStuff').style.display='block'; //display main stuff
+        orderPart2 = randomize(theData.length);
+        makeSpeakingQuestion(orderPart2[0]);
+    }
+
+    function analyzeSpeaking(words){
+        console.log("analyzeSpeaking fired");
+        stopTimer();
+        let thisCorrect = 0;
+        let seikai = theData[correctnessData.part2.length].word;
+        let proncheck = words.
+            toLowerCase()
+            .replace(/[.,\/#!$%\^&\*;:?{}=\-_`~()]/g,"")
+            .split(" ");
+        if (proncheck.includes(seikai)) {
+            document.getElementById('correctnessModalContent').classList="w3-center w3-green";
+            document.getElementById('correctnessModalContent').innerHTML="よくできました！";
+            thisCorrect = 1;
+        } else {
+            document.getElementById('correctnessModalContent').classList="w3-center w3-red";
+            document.getElementById('correctnessModalContent').innerHTML="ドンマイ！";
+        }
+        let wordsArray = ProvideWords(words);
+        let syl_count = countSyllablesArray(wordsArray);
+        let originalWords = ProvideWords(seikai);
+        let syl_count2 = countSyllablesArray(originalWords);
+        let penalty = syl_count-syl_count2;
+        let sps;
+        if (the_timer == 0){
+            sps = syl_count / 0.5;
+        } else {
+            sps = syl_count / (the_timer/10);
+        }
+        sps = sps.toFixed(2);
+        correctnessData.part2.push({'correctness':thisCorrect,'SR':sps, 'syllables':syl_count, 'extraSyl':penalty});
+        setTimeout(()=>{
+            document.getElementById('correctnessModal').style.display="none";
+            finishSpeakingQuestion();
+        }, 1300);
+        document.getElementById('correctnessModal').style.display="block";
+    }
+
+    function finishSpeakingQuestion(){
+        if (correctnessData.part2.length < theData.length){
+            makeSpeakingQuestion(orderPart2[correctnessData.part2.length]); //set the next question
+        } else { //if we're finished, go to the next one
+            document.getElementById('Part1Holder').style.display="none";
+            document.getElementById('Part2Holder').style.display="none";
+            SendAll();
+        }
+    }
+    
     //Main ASR start
     function StartASR(){
-    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    recognition = new SpeechRecognition();
-    if (!recognition){
-        recognition = new webkitSpeechRecognition();
-        isInternalSR = false;
-    }
-    recognition.continuous = true;
-    recognition.lang = 'en-US';
-    if (isInternalSR == false){
-        recognition.interimResults = true;
-    } else {
-        recognition.interimResults = false;
-    }
-    recognition.onerror = (event) => {
-        console.log(event.error);
-        ASRerrorHandle(event.error);
-    };
-    recognition.onresult = disp;
-}
-    function disp(event) {
-        var interim_transcript = '';
-        var results = event.results;
-        for (var i = event.resultIndex; i < results.length; ++i) {
-            if (results[i].isFinal) {
-                counter += 1;
-                let div_name = 'holder_'+counter;
-                let temp_name = 'sent_'+counter;
-                let holder = document.createElement('div');
-                holder.id=div_name;
-                holder.className="w3-panel w3-light-gray";
-                document.getElementById('final_results').appendChild(holder);
-                let sentence = document.createElement("p");
-                sentence.id=temp_name;
-                sentence.className="w3-cell"
-                sentence.innerHTML += results[i][0].transcript;
-                document.getElementById(div_name).appendChild(sentence);
-            } else {
-                interim_transcript +=event.results[i][0].transcript;
-                document.getElementById('temp_results').innerHTML = interim_transcript;
-            }
+        console.log('startASR fired');
+        window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        if (!recognition){
+            recognition = new webkitSpeechRecognition();
+            isInternalSR = false;
         }
-}
+        recognition.continuous = false;
+        recognition.lang = language_var;
+        if (isInternalSR == false){
+            recognition.interimResults = true;
+        } else {
+            recognition.interimResults = false;
+        }
+        recognition.onerror = (event) => {
+            console.log(event.error);
+            ASRerrorHandle(event.error);
+        };
+        recognition.onresult = disp;
+    }
+            function disp(event) {
+                console.log('disp fired')
+                var results = event.results;
+                for (var i = event.resultIndex; i < results.length; ++i) {
+                    if (results[i].isFinal) {
+                        analyzeSpeaking(results[i][0].transcript);
+                    } 
+                }
+            }  
+
+
+    //Function that feeds all the various randomizers.
+    function randomize(x){
+        var answers = [];
+        for (let i=0; i<x; i++){
+            answers.push(i);
+        }
+        var random_order = [];
+        var db = [];
+        for (let i=0; i<x; i++) {
+                let temp = Math.random();
+                random_order.push(temp);
+            }
+        for (let i=0; i<x; i++) {
+                db.push({"rank": answers[i], "number": random_order[i]});
+            }
+        var sorted = db.slice().sort((a, b) => a.number - b.number);
+        answers = [];
+        for (let i=0; i<x; i++){
+            answers.push(sorted[i].rank);
+        }
+        return (answers)
+    }
 
 </script>
