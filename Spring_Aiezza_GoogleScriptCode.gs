@@ -5,10 +5,10 @@ function doGet(e) {
  
 }
  
-function userClicked(Snumber, final_answer, W, MLU) {
+function userFinished(Snumber, allData) {
   var ws = SpreadsheetApp.openByUrl("URL");
   var ss = ws.getSheetByName("Answers");
  
-  ss.appendRow([new Date(), Snumber, final_answer, W, MLU]);
+  ss.appendRow([new Date(), Snumber, JSON.stringify(allData)]);
   
 }
