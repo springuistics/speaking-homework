@@ -27,6 +27,11 @@
         }
     ];
 
+    const theData2 = [
+        'What would you like?',
+        'I would like grilled eel.'
+    ];
+
 
 </script>
     
@@ -53,34 +58,37 @@
 <div id="beginner" class="w3-container">
     <div class="w3-border w3-leftbar w3-topbar w3-rightbar w3-bottombar w3-border-blue">
         <div class="w3-container w3-blue">
-            <h1>生徒情報</h1>
+            <h1>生徒情報を入力して、声を選んで、スピーキングを試してください</h1>
         </div>
         <div class="w3-row-padding">
-            <div class="w3-center">
+            <div class="w3-center w3-container w3-half">
                 <div id="number_error" class="w3-panel w3-red w3-display-container" style="display: none">
                     <span onclick="this.parentElement.style.display='none'"
                     class="w3-button w3-large w3-display-topright">&times;</span>
                     <p>生徒番号の入力を忘れました！入力してください！</p>
                 </div>
-                <h3 class="w3-text-blue">Student Number</h3>
+                <h3 class="w3-text-blue">生徒番号</h3>
                 <input id="snumber" class="w3-input w3-border w3-border-blue" type="text">
+            </div>
+            <div class="w3-container w3-half" >
+                <div class="w3-half w3-center">
+                    <br><br>
+                    <button id="testing" class="w3-button w3-red w3-round-xlarge w3-border w3-hover-grey" onclick="TesttheASR()">スピーキングを試す</button>
+                    <div class="w3-bar" id="yo" style="display: none;">
+                        <p id="testing123" class="w3-center w3-sand"></p>
+                    </div>
+                </div>
+                <div class="w3-half w3-center">
+                    <br><br>
+                    <label for="voices"><b>声を選んでください</b></label>
+                    <select id="voices" class="lSelect" onchange="selectVoice()">
+                    </select>
+                </div>
             </div>
         </div>
         <br>
     </div>
-    <div class="w3-container w3-light-grey" >
-        <div class="w3-half w3-center">
-            <button id="testing" class="w3-button w3-red w3-round-xlarge w3-border w3-hover-grey" onclick="TesttheASR()">スピーキングを試す</button>
-            <div class="w3-bar" id="yo" style="display: none;">
-                <p id="testing123" class="w3-center w3-sand"></p>
-            </div>
-        </div>
-        <div class="w3-half w3-center">
-            <label for="voices"><b>声を選んでください</b></label>
-            <select id="voices" class="lSelect" onchange="selectVoice()">
-            </select>
-            </div>
-        </div>
+    
     <div class="w3-bar w3-center w3-padding-16">
         <button id="begin" class="w3-button w3-green w3-round-xlarge w3-hover-grey" onclick="StartTest()">始める！</button>
     </div>
@@ -145,7 +153,6 @@
     </div>
 
     <div id="Part2Holder" style="display:none">
-        <div id="Part2Holder">
         <div class="tu-prime-light tu-menuFull w3-center">
             <br>
             <p class="tu-top-explanation">スタートボタンを押したら、英語の音声が流れます。グルグルが消えたら、できるだけ発音よく繰り返してみてください。</p>
@@ -166,8 +173,34 @@
                 </div>
                 <br><br>
                 <div class="tu-white-island">
+                    <h3 id="whatToSay"></h3>
                     <div id="part2Pictures" class="w3-container w3-center">
-                        
+                            
+                    </div>
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+    <div id="Part3Holder" style="display:none">
+        <div class="tu-prime-light tu-menuFull w3-center">
+            <br>
+            <p class="tu-top-explanation">よくできました！</p>
+            <br>
+            <div class="w3-bar w3-center">
+                <p>回答が無事に先生に送られました！</p>
+            </div>
+            <br><br>
+        </div>
+        <div class="w3-container">
+            <div class="tu-menuFull tu-second-light" id="source_id">
+                <div class="tu-menu90 tu-second-dark w3-center">
+                    <h3>総合結果：</h3>
+                </div>
+                <br><br>
+                <div class="tu-white-island">
+                    <div id="part3Pictures" class="w3-container w3-center">
+                            
                     </div>
                 </div>
                 <br>
@@ -175,7 +208,6 @@
         </div>
     </div>
 
-    </div>
 
 
 </div>
@@ -314,7 +346,8 @@
         if (correctness==true){
             document.getElementById('correctnessModalContent').classList="w3-center w3-green";
             document.getElementById('correctnessModalContent').innerHTML="正解！";
-            correctnessData.part1.push({'guesses':guesses,'RT':the_timer/10});
+            let first = correctnessData.part1.length;
+            correctnessData.part1.push({'qNo': orderPart1[first],'guesses':guesses,'RT':the_timer/10});
             setTimeout(()=>{
                 document.getElementById('correctnessModal').style.display="none";
                 finishPictureQuestion();
@@ -443,8 +476,28 @@
     function SendAll(){
         Snumber = document.getElementById('snumber').value;
         console.log(correctnessData);
-        google.script.run.userFinished(Snumber, correctnessData);
-        alert("回答は無事に先生に送られました！");
+
+        //google.script.run.userFinished(Snumber, correctnessData);
+        document.getElementById('Part3Holder').style.display="block";
+        document.getElementById('part3Pictures').innerHTML = "Part 1: 絵と英語のマッチング";
+        for (let i = 0; i < correctnessData.part1.length; i++) {
+            for (let item of correctnessData.part1) {
+                if (item.qNo === i) {
+                    document.getElementById('part3Pictures').innerHTML += "<br> Question "+(i+1)+": "+item.guesses+"回で正解できた。"+item.RT+"秒かかった。"
+                    break; // stop after finding the match
+                }
+            }
+        }
+        document.getElementById('part3Pictures').innerHTML += "<br><br>Part 2: スピーキング";
+        for (let i = 0; i < correctnessData.part2.length; i++) {
+            for (let item of correctnessData.part2) {
+                if (item.qNo === i) {
+                    document.getElementById('part3Pictures').innerHTML += "<br> Question "+(i+1)+": 正解率は"+(item.correctness*100).toFixed(0)+"％でした。1秒に"+item.SR+"音節の速度で発音できた。"
+                    break; // stop after finding the match
+                }
+            }
+        }
+
     }
 
     
@@ -504,39 +557,64 @@
 
     function makeSpeakingQuestion(number){
         the_timer=0;
-        Listen(theData[number].word);
+        Listen(theData2[number]);
+        document.getElementById('whatToSay').innerHTML=theData2[number];
         document.getElementById('part2Pictures').innerHTML="<span style='color:red'><b>待ってください...</b></span> <br><img style='max-height:200px' src='https://springsenglish.online/dumbNLP/Spinning.gif'></img>";
     }
 
     function truePart2Start(){
         document.getElementById('part2StartButton').style.display='none'; //hide the start button
         document.getElementById('part2AllStuff').style.display='block'; //display main stuff
-        orderPart2 = randomize(theData.length);
+        orderPart2 = randomize(theData2.length);
         makeSpeakingQuestion(orderPart2[0]);
     }
 
     function analyzeSpeaking(words){
-        console.log("analyzeSpeaking fired");
+        console.log(theData2[orderPart2[correctnessData.part2.length]]);
         stopTimer();
-        let thisCorrect = 0;
-        let seikai = theData[correctnessData.part2.length].word;
-        let proncheck = words.
-            toLowerCase()
-            .replace(/[.,\/#!$%\^&\*;:?{}=\-_`~()]/g,"")
-            .split(" ");
-        if (proncheck.includes(seikai)) {
-            document.getElementById('correctnessModalContent').classList="w3-center w3-green";
-            document.getElementById('correctnessModalContent').innerHTML="よくできました！";
-            thisCorrect = 1;
-        } else {
-            document.getElementById('correctnessModalContent').classList="w3-center w3-red";
-            document.getElementById('correctnessModalContent').innerHTML="ドンマイ！";
+        let PassArray = ProvideWords(theData2[orderPart2[correctnessData.part2.length]]);
+        let originalWords = ProvideWordsWithPunctuation(theData2[orderPart2[correctnessData.part2.length]]);
+        let spkArray = ProvideWords(words);
+        let passObject = DifferentWordsPreprocessed(PassArray);
+        let dwArray = [];
+        let dwNumbers = [];
+        for (let [key, value] of passObject.DWCounts){
+            dwArray.push(key);
+            dwNumbers.push(value);
         }
-        let wordsArray = ProvideWords(words);
-        let syl_count = countSyllablesArray(wordsArray);
-        let originalWords = ProvideWords(seikai);
-        let syl_count2 = countSyllablesArray(originalWords);
-        let penalty = syl_count-syl_count2;
+
+        let correctTWs = [];
+        let extraWords = 0;
+        for (let i=0; i<spkArray.length; i++){
+            let found = false;
+            for (let j=0; j<dwArray.length; j++){
+                if (spkArray[i] == dwArray[j]){
+                    correctTWs.push(spkArray[i]);
+                    found = true;
+                }
+            }
+            if (found == false){
+                extraWords +=1;
+            }
+        }
+
+        let correctCount = 0;
+        let correctWords = [];
+        let correctCounts = DifferentWordsPreprocessed(correctTWs);
+        for (let [key, value] of passObject.DWCounts){
+            if (correctTWs.includes(key)){
+                if (correctCounts.DWCounts.get(key) <= value){
+                    correctCount += correctCounts.DWCounts.get(key);
+                } else {
+                    correctCount += value;
+                    extraWords += (correctCounts.DWCounts.get(key) - value);
+                }
+            }
+        }
+
+        let penalizedCorrect = safeDivision((correctCount - extraWords), PassArray.length);
+        let spokenCorrect = safeDivision(correctCount, PassArray.length);
+        let syl_count = countSyllablesArray(spkArray);
         let sps;
         if (the_timer == 0){
             sps = syl_count / 0.5;
@@ -544,12 +622,28 @@
             sps = syl_count / (the_timer/10);
         }
         sps = sps.toFixed(2);
-        correctnessData.part2.push({'correctness':thisCorrect,'SR':sps, 'syllables':syl_count, 'extraSyl':penalty});
+        correctnessData.part2.push({'qNo': orderPart2[(correctnessData.part2.length)], 'correctness':spokenCorrect, 'penPct':penalizedCorrect,'SR':sps, 'syllables':syl_count, 'words': words});
         setTimeout(()=>{
             document.getElementById('correctnessModal').style.display="none";
             finishSpeakingQuestion();
-        }, 1300);
+        }, 1700);
         document.getElementById('correctnessModal').style.display="block";
+        document.getElementById('correctnessModalContent').classList="w3-center w3-white";
+        document.getElementById('correctnessModalContent').innerHTML="";
+        let tempItem = document.createElement('p');
+        console.log(PassArray);
+        console.log(originalWords);
+        console.log(correctTWs);
+        for (let q=0; q<PassArray.length; q++){
+            let wordIn = correctTWs.includes(PassArray[q]);
+            if (wordIn == true){
+                tempItem.innerHTML += `<b><span style="color: rgb(0, 153, 51);">${originalWords[q]}</span> </b> `;
+            } else {
+                tempItem.innerHTML += "<b><span style='color: rgb(230, 0, 0);'>"+originalWords[q]+"</span> </b> ";
+            }
+        }
+        document.getElementById('correctnessModalContent').appendChild(tempItem)
+
     }
 
     function finishSpeakingQuestion(){
