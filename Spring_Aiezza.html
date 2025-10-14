@@ -476,8 +476,6 @@
     function SendAll(){
         Snumber = document.getElementById('snumber').value;
         console.log(correctnessData);
-
-        //google.script.run.userFinished(Snumber, correctnessData);
         document.getElementById('Part3Holder').style.display="block";
         document.getElementById('part3Pictures').innerHTML = "Part 1: 絵と英語のマッチング";
         for (let i = 0; i < correctnessData.part1.length; i++) {
@@ -497,6 +495,7 @@
                 }
             }
         }
+        google.script.run.userFinished(Snumber, correctnessData);
 
     }
 
