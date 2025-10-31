@@ -276,8 +276,8 @@
         setTimeout(GetVoices, 3000);
     }
 
-    //Provides the listening via text-to-speech; takes a string as an argument.
-    function Listen(word) {
+    //Provides the listening via text-to-speech; takes a string as an argument. It can also take "speed" as a true/false. If true it gets slowed down
+    function Listen(word, speed) {
         //Cancel current / previous speech synthesis
         if (window.speechSynthesis.speaking) { 
             window.speechSynthesis.cancel(); 
@@ -286,6 +286,9 @@
         utter.lang = language_var;
         utter.voice = voices.find(voice=> voice.name === options.value);
         utter.text = word;
+        if (speed==true){
+            utter.rate = 0.8; //80% of normal speed, i.e. slower
+        }
         window.speechSynthesis.speak(utter);
         utter.onend = function(event) {
             if (document.getElementById('Part2Holder').style.display=="block"){
@@ -446,7 +449,7 @@
         Listen(theData[orderPart1[correctnessData.part1.length]].word)
     }
     function relisten2(){
-        Listen(theData2[orderPart2[correctnessData.part2.length]])
+        Listen(theData2[orderPart2[correctnessData.part2.length]], true)
     }
 
     //Matches the needle in the haystack (array) and returns what is required
@@ -556,7 +559,7 @@
 
     function makeSpeakingQuestion(number){
         the_timer=0;
-        Listen(theData2[number]);
+        Listen(theData2[number], true);
         document.getElementById('whatToSay').innerHTML=theData2[number];
         document.getElementById('part2Pictures').innerHTML="<span style='color:red'><b>待ってください...</b></span> <br><img style='max-height:200px' src='https://springsenglish.online/dumbNLP/Spinning.gif'></img>";
     }
