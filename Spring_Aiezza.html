@@ -649,7 +649,7 @@
     }
 
     function finishSpeakingQuestion(){
-        if (correctnessData.part2.length < theData.length){
+        if (correctnessData.part2.length < theData2.length){
             makeSpeakingQuestion(orderPart2[correctnessData.part2.length]); //set the next question
         } else { //if we're finished, go to the next one
             document.getElementById('Part1Holder').style.display="none";
