@@ -8,7 +8,10 @@ function doGet(e) {
 function userFinished(Snumber, allData) {
   var ws = SpreadsheetApp.openByUrl("URL");
   var ss = ws.getSheetByName("Answers");
- 
+ var row = [];
+row.push(new Date());
+row.push(Snumber);
+
   // Loop through qNo values in order for Part 1
   for (var i = 0; i < allData.part1.length; i++) {
     for (var j = 0; j < allData.part1.length; j++) {
@@ -38,6 +41,7 @@ function userFinished(Snumber, allData) {
   }
 
 
-  ss.appendRow([new Date(), Snumber, JSON.stringify(allData)]);
-  
+  //ss.appendRow([new Date(), Snumber, JSON.stringify(allData)]);
+  ss.appendRow(row);
+
 }
