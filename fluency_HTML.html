@@ -1,0 +1,490 @@
+<html>
+    <link rel="stylesheet" href="https://springsenglish.online/dumbNLP/w3.css">
+    <script src="https://springsenglish.online/dumbNLP/dumbNLP_v1_0_safari.js"></script>
+    <script src="https://springsenglish.online/dumbNLP/asrErrorHandler_JS.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<body>
+    <script>
+    //Please insert your title and prompt here:
+    
+    //Enter title below in the area that says "Enter Title". Do NOT delete the quotations
+    const YourTitle = "Enter Title";
+    
+    //Enter prompt below in the area that says "Enter Prompt". Do NOT delete the quotations
+    const YourPrompt = "Enter Prompt";
+
+    </script>
+
+<!--This is the ASR error modal-->
+<div id="theASRerrorHolder" class="w3-modal" onclick="this.style.display='none'" style="display:none;">
+    <div id="asrModalContent" class="w3-modal-content w3-animate-zoom" style="width:560px; height:315px; overflow-y: auto;">
+        <header class="w3-container w3-red w3-center"><h2>Audio Error</h2>
+        <span class="w3-button w3-hover-red w3-xlarge w3-display-topright">&times;</span></header>
+        <div class="w3-container">
+            <div id="theASRerrorMessage"></div>
+        </div>
+    </div>
+</div>
+
+<!--This is the first screen-->
+<div id="beginner" class="w3-container">
+<div class="w3-border w3-leftbar w3-topbar w3-rightbar w3-bottombar w3-border-blue">
+    <div class="w3-container w3-blue">
+        <h1>Student Information</h1>
+    </div>
+    <div class="w3-row-padding">
+        <div class="w3-half w3-center">
+            <div id="number_error" class="w3-panel w3-red w3-display-container" style="display: none">
+                <span onclick="this.parentElement.style.display='none'"
+                class="w3-button w3-large w3-display-topright">&times;</span>
+                <p>You forgot to write your student number, or have written an invalid student number!</p>
+            </div>
+            <h3 class="w3-text-blue">Student Number</h3>
+            <input id="snumber" class="w3-input w3-border w3-border-blue" type="text">
+        </div>
+        <div class="w3-half w3-center">
+            <div id="sname_error" class="w3-panel w3-red w3-display-container" style="display: none">
+                <span onclick="this.parentElement.style.display='none'"
+                class="w3-button w3-large w3-display-topright">&times;</span>
+                <p>You forgot to write your name!</p>
+            </div>
+            <h3 class="w3-text-blue">Enter Your Name:</h3>
+            <input id="sname" class="w3-input w3-border w3-border-blue" type="text">
+        </div>
+    </div>
+    <div class="w3-row-padding">
+        <div class="w3-half w3-center">
+            <div id="day_error" class="w3-panel w3-red w3-display-container" style="display: none">
+                <span onclick="this.parentElement.style.display='none'"
+                class="w3-button w3-large w3-display-topright">&times;</span>
+                <p>You forgot to select your class!</p>
+            </div>
+            <h3 class="w3-text-blue">English Class Day:</h3>
+            <input class="w3-radio" type="radio" name="Day" value="Monday">
+            <label>Monday</label>
+            <input class="w3-radio" type="radio" name="Day" value="Tuesday">
+            <label>Tuesday</label>
+            <input class="w3-radio" type="radio" name="Day" value="Wednesday">
+            <label>Wednesday</label>
+            <input class="w3-radio" type="radio" name="Day" value="Thursday">
+            <label>Thursday</label>
+            <input class="w3-radio" type="radio" name="Day" value="Friday">
+            <label>Friday</label>
+        </div>
+        <div class="w3-half w3-center">
+            <div id="time_error" class="w3-panel w3-red w3-display-container" style="display: none">
+                <span onclick="this.parentElement.style.display='none'"
+                class="w3-button w3-large w3-display-topright">&times;</span>
+                <p>You forgot to select your class period!</p>
+            </div>
+            <h3 class="w3-text-blue">English Class Period:</h3>
+            <input class="w3-radio" type="radio" name="Period" value="1">
+            <label>1st Period</label>
+            <input class="w3-radio" type="radio" name="Period" value="2">
+            <label>2nd Period</label>
+            <input class="w3-radio" type="radio" name="Period" value="3">
+            <label>3rd Period</label>
+            <input class="w3-radio" type="radio" name="Period" value="4">
+            <label>4th Period</label>
+        </div>
+    </div>
+    <br>
+</div>
+    <div class="w3-bar" id="yo" style="display: none;">
+        <p id="testing123" class="w3-center w3-sand"></p>
+    </div>
+    <div class="w3-bar w3-center w3-padding-16">
+        <button id="testing" class="w3-button w3-red w3-border w3-hover-grey" onclick="TesttheASR()">Check Device Compatibility</button>
+        <button id="begin" class="w3-button w3-purple w3-border w3-hover-deep-purple" onclick="StartTest()">Begin the Task</button>
+    </div>
+
+</div>
+
+<div id="real_stuff" style="display: none;">
+        <!--Main directions menu-->
+    <div class="tu-prime-light tu-menuFull w3-center" id="mainMenu">
+        <p class="tu-top-explanation" id="the_directions">Click and then speak to measure your fluency (the number of syllables you spoke per second).</p>
+        <br>
+    </div>
+
+    <!--Container for editing-->
+    <div class="tu-menuFull tu-second-light">
+        <div class="tu-menu90 tu-second-dark w3-center">
+            <h3 id="theTitleText">YourTitle Goes Here</h3>
+            <p id="theShijiBun">YourPrompt Goes Here</p>
+        </div>
+        <br>
+        <p id="timer">00 : 00</p>
+        <br>
+        <h3 id="komakaiInstructions">Click on the "Begin Speaking!" button</h3>
+        <br>
+        <div class="w3-center">
+            <button id="the_button" class="w3-button w3-green w3-round-xlarge w3-hover-grey" onclick="start()">Begin Speaking!</button>
+        </div>
+        <br>
+        <div class="tu-white-island">
+            <div id='waitorgo'></div>
+            <div id="various_fb" class="w3-container w3-center">
+                <p id="feedback"></p>
+                <br>
+            </div>
+            <div>
+                <p id="feedback2" class="w3-container w3-center"></p>
+            </div>
+        </div>
+        <br><br>
+    </div>
+</div>
+</body>
+</html>
+
+<style>
+#redtext{
+    color: red;
+    font-size: larger;
+}
+#feedback{
+    font-weight: bold;
+    font-size: large;
+}
+#timer{
+    margin: auto;
+    border: outset 4px grey;
+    background-color: black;
+    font-size: large;
+    font-family: 'Courier New', Courier, monospace;
+    color: white;
+    width: 200px;
+    padding: 10px;
+    vertical-align: middle;
+}
+.graphity{
+    width:100%; 
+    max-width:700px; 
+    margin:auto;
+}
+</style>
+
+<script>
+    //Sets user prompt and title
+    document.getElementById('theTitleText').innerHTML = YourTitle;
+    document.getElementById('theShijiBun').innerHTML = YourPrompt;
+    //Variables for counters
+    var the_utterance = "";
+    var the_counter;
+    var Interval;
+    var cumulativeSR = 0;
+    var cumulativeFW = 0;
+    var isInternalSR = true;
+    
+    //Variables for student data from first page
+    var Snumber; var Teacher_Name; var cDay; var cTime;
+    
+    //Ensures at least one of the radio buttons is checked
+    function atLeastOneRadio(name) {
+        let losRadio = document.querySelector('input[name= "'+name+'"]:checked');
+        if (losRadio != null){
+            return (true);    
+        } else return (false);
+    }
+
+    //Switches to the problem / test
+    function StartTest(){
+
+        //Ensures students entered data and throws errors if they haven't 
+        if (document.getElementById('snumber').value == "" || document.getElementById('sname').value == "" || atLeastOneRadio('Day') == false || atLeastOneRadio('Period') == false){
+            if(document.getElementById('snumber').value == ""){
+            document.getElementById('number_error').style.display = "block";
+            } else  {document.getElementById('number_error').style.display = "none";}
+            if(document.getElementById('sname').value == ""){
+                document.getElementById('sname_error').style.display = "block";
+            } else{document.getElementById('sname_error').style.display = "none";}
+            if(atLeastOneRadio('Day') == false){
+                document.getElementById('day_error').style.display = "block";
+            } else {document.getElementById('day_error').style.display = "none";}
+            if(atLeastOneRadio('Period') == false){
+                document.getElementById('time_error').style.display = "block";
+            } else {document.getElementById('time_error').style.display = "none";}
+        } else {
+            document.getElementById('beginner').style.display = "none";
+            document.getElementById('real_stuff').style.display = "block";
+        }
+    }
+    
+    //Sends data; for this demo, it simply writes it in an alert box
+    function SendAll(thisData){
+        Snumber = document.getElementById('snumber').value;
+        Teacher_Name = document.getElementById('sname').value;
+        cDay = document.querySelector('input[name="Day"]:checked').value;
+        cTime = document.querySelector('input[name="Period"]:checked').value;
+        google.script.run.userClicked(Snumber, Teacher_Name, cDay, cTime, the_utterance, thisData.SR, thisData.syllableCNT, thisData.noWords, thisData.timeElapsed, thisData.thingIs, thisData.Imean, thisData.well, thisData.tryingToSay, thisData.itTurnsOut, thisData.letMeSee);     
+        
+    }
+
+
+    //Controls the initial test ASR
+    function TesttheASR(){
+        document.getElementById('yo').style.display = "inline";
+        document.getElementById('testing123').innerHTML = "試行中...";
+        testASR();
+        test_run.start();
+    }
+    function testASR(){
+        //Try to grab speech recognition and show preference for internal device
+        window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        test_run = new SpeechRecognition();
+        if (!test_run){
+            test_run = new webkitSpeechRecognition();
+        isInternalSR = false;
+        }
+        //Set up speech recognition. Important! For internal android devices, interm must be turned off!
+        test_run.continuous = true;
+        test_run.lang = 'en-US';
+        if (isInternalSR == false){
+            test_run.interimResults = true;
+        } else {
+            test_run.interimResults = false;
+        }
+        test_run.onerror = (event) => {
+        console.log(event.error);
+        ASRerrorHandle(event.error);
+        };
+        test_run.onresult = disp_test;
+        }
+        function disp_test(event){
+            var results = event.results;
+            for (var i = event.resultIndex; i < results.length; ++i) {
+                if (results[i].isFinal) {
+                    if (results[i][0].transcript){
+                        document.getElementById('testing123').innerHTML = "このデバイスで問題なくスピーキング練習はできます。";
+                        document.getElementById('testing123').className = "w3-center w3-green";
+                    } else {
+                        document.getElementById('testing123').innerHTML = "お使いのデバイスが音声を正しく認識できていないようです。再度お試しいただくか、別のデバイスをご使用いただくか、必要に応じてサポートをご利用ください。";
+                        document.getElementById('testing123').className = "w3-center w3-red";
+                    }
+                    test_run.stop();
+                } 
+            }
+    }
+
+//Holder for basic actions depending on if we're a go or if we're a stop
+function start(){
+    let button = document.getElementById('the_button');
+    if (button.innerHTML == "Begin Speaking!"){
+        document.getElementById('waitorgo').innerHTML = "<span>wait...</span> <br><img style='max-height:200px' src='../../pictures/Spinning.gif'></img>";
+        action();
+        setTimeout(toppeiChange, 700);
+        function toppeiChange(){
+            document.getElementById('waitorgo').innerHTML = "<span>listening...</span>"; 
+        }
+    } else {
+        stop();
+    }
+}
+
+function action(){
+    the_utterance = "";
+    document.getElementById("timer").innerHTML = "00 : 00";
+    document.getElementById("feedback").innerHTML = "";
+    document.getElementById("feedback2").innerHTML = "";
+    if(document.getElementById('graph_holder')){
+        document.getElementById('graph_holder').remove();
+    }
+    document.getElementById("the_button").innerHTML = "Stop Speaking!";
+    document.getElementById('komakaiInstructions').innerHTML = 'Click on the "Stop Speaking!" button when finished';
+    document.getElementById("the_button").className = "w3-button w3-red w3-round-xlarge w3-hover-grey";
+    init();
+    recognition.start();
+    the_counter = 0;
+    clearInterval(Interval);
+    Interval = setInterval(startTimer, 1000);
+    //This function adds 0.1 seconds to the timer every 0.1 seconds. Its not actually starting the stopwatch itself.
+    function startTimer(){
+        the_counter += 1;
+        var the_thing = the_counter.toFixed(1);
+        var minutes = Math.floor(the_thing / 60);
+        if (minutes<10){
+            minutes = "0"+minutes;
+        }
+        var seconds = the_thing % 60;
+        if (seconds <10) {
+            seconds = "0"+seconds;
+        }
+        document.getElementById('timer').innerHTML = minutes + " : " + seconds;
+        }
+
+}
+
+function stop(){
+    recognition.stop();
+    document.getElementById('waitorgo').innerHTML = "";
+    clearInterval(Interval);
+    document.getElementById('feedback').innerHTML = "Processing...";
+    setTimeout(everything, 1500);
+    function everything(){
+        document.getElementById("the_button").innerHTML = "Begin Speaking!";
+        document.getElementById('komakaiInstructions').innerHTML = 'Click on the "Begin Speaking!" button';
+        document.getElementById("the_button").className = "w3-button w3-green w3-round-xlarge w3-hover-grey";
+        let utterLemmas = Lemmatize(the_utterance);
+        let fillerWords = ["the thing be", "what i mean be", "well", "try to say", "it turn out", "let me see"];
+        let fillers = CheckForKeywordsAndPhrasesPreprocessed(utterLemmas, fillerWords);
+        cumulativeFW += fillers.count;
+        let words = ProvideWords(the_utterance);
+        let syl_count = countSyllablesArray(words);
+        let sps;
+        if (the_counter == 0){
+            sps = syl_count / 0.5;
+        } else {
+            sps = syl_count / the_counter;
+        }
+        sps = sps.toFixed(2);
+        cumulativeSR += sps;
+        let advice = "";
+        if (sps < 2) {
+            advice = "That is too slow; please practice speaking more quickly with fewer pauses.";
+        } else if (sps < 3.2) {
+            advice = "That is a pretty good pace, but you still need to improve your fluency a little more.";
+        } else if (sps <= 5.9) {
+            advice = "That is great fluency!";
+        } else if (sps > 5.9) {
+            advice = "That is too fast. Consider slowing down a little bit and focusing on pronunciation next.";
+        }
+        if (fillers.count == 0){
+            advice += " You didn't use any fillers!"
+        } else if (fillers.count < 3) {
+            advice += " You only used <p id='redtext'>"+fillers.count+"</p> filler words; consider using more.";
+        } else {
+            advice += " You used many fillers; good job!"
+        }
+        advice += "<br><br><p style='width: 50%; margin: auto; text-align: left;'>Filler usage:";
+        for (let [key, value] of fillers.keycounts) {
+            let trueTag = "";
+            if (key == "the thing be"){
+                trueTag = "the thing is";
+            } else if (key == "try to say"){
+                trueTag = "what I'm trying to say is...";
+            } else if (key == "what i mean be"){
+                trueTag = "what I mean is...";
+            } else if (key == "it turn out") {
+                trueTag = "it turns out that..."
+            } else {
+                trueTag = key;
+            }
+            advice += "<br><b>"+trueTag+"</b> usage: " + value;
+        }
+        advice+="</p>";
+    
+        //Apparantly a native speaker is around 4sps, with a range of 3.3 to 5.9; Tohoku students are often between 1.6 and 3.1 - use that magic. 
+        document.getElementById('feedback').innerHTML = "Your speech rate was: <p id='redtext'>" + sps + "</p> syllables per second."
+        document.getElementById('feedback2').innerHTML = advice;
+        let dumb_div = document.createElement("div");
+        dumb_div.id="graph_holder";
+        let graph = document.createElement("canvas");
+        graph.id="graph";
+        graph.className="graphity";
+        document.getElementById("various_fb").appendChild(dumb_div);
+        document.getElementById("graph_holder").appendChild(graph);
+        displayChart(sps);
+        
+        //for sending data
+        let thisData = {'SR': sps, 'syllableCNT': syl_count, 'thingIs':fillers.keycounts.get("the thing be"), 'Imean':fillers.keycounts.get("what i mean be"), 'well':fillers.keycounts.get("well"), 'tryingToSay':fillers.keycounts.get("try to say"), 'itTurnsOut':fillers.keycounts.get("it turn out"), 'letMeSee':fillers.keycounts.get("let me see"), 'noWords':words.length, 'timeElapsed': the_counter};
+        SendAll(thisData);
+    }
+
+}
+function displayChart(speed){
+    var thisBGcolor;
+    if (speed > 6 || speed < 2){
+      thisBGcolor ="red";
+    } else {
+      thisBGcolor = "green";
+    }
+    let mixedChart = new Chart("graph", {
+        data: {
+            datasets: [{
+                type: 'bar',
+                label: 'Your Speech Rate',
+                data: [speed],
+                backgroundColor: thisBGcolor
+            }],
+            labels: ['Syllables per Second']
+        },
+        options: {
+            indexAxis: 'y',
+            plugins: {
+                legend: {display: false},
+                title: {
+                    display: true,
+                    text: "Your Fluency",
+                    font: {size: 24},
+                    padding: {
+                        top: 10,
+                        bottom: 10
+                    }
+                }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+          x: {
+            suggestedMin: 0,
+            suggestedMax: 7,
+            ticks: {
+                callback: function(val, index){
+                    if (index===2){
+                        return ['2','Too Slow'];
+                    } else if (index===6){
+                        return ['6','Too Fast'];
+                    } else {
+                        return index;
+                    }
+                },
+                color: function(value, data){
+                    if (value.tick.value == 2 || value.tick.value == 6){
+                        return 'red';
+                    } else {
+                        return 'black';
+                    }
+                },
+                font: {size: 16},
+            }
+          }
+        }
+      }
+    });
+}
+
+    //Initializes ASR for speaking question and handles results.
+    function init() {
+        window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        
+        recognition = new SpeechRecognition();
+        if (!recognition){
+        recognition = new webkitSpeechRecognition();
+        isInternalSR = false;
+        } 
+        recognition.continuous = true;
+        recognition.lang = 'en-US';
+        recognition.interimResults = true;
+        if (isInternalSR == false){
+            recognition.interimResults = true;
+        } else {
+            recognition.interimResults = false;
+        }
+        recognition.onerror = (event) => {
+            console.log(event.error);
+            ASRerrorHandle(event.error);
+        };
+        recognition.onresult = disp;
+    }
+    function disp(event) {
+        var results = event.results;
+        for (var i = event.resultIndex; i < results.length; ++i) {
+            if (results[i].isFinal) {
+                the_utterance += results[i][0].transcript;
+            } 
+        }
+    }
+
+</script>
